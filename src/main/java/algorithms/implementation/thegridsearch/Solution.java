@@ -48,26 +48,54 @@ public class Solution {
         // Get the list of tokens from the pattern ordered by Grid/Pattern uniqueness 
         ArrayList<Token> fpTokens = tokenTracker.getFingerprintOrderedTokens();
 
+
         // Print token details
+        int fpTokenInstanceCount = 0;        
         for( Token token : fpTokens){
             System.out.println( String.format("Token: %s  GridCount: %s PatternCount: %s FingerprintValue: %s", 
                 token.id, token.gridInstanceCount, token.patternInstanceCount,
                 token.gridInstanceCount * token.patternInstanceCount) );
+            fpTokenInstanceCount += token.patternInstanceCount;
         }
+        System.out.println(String.format("There are %s fingerprint tokens with a total of "
+        +"%s instances", fpTokens.size(), fpTokenInstanceCount));
 
-        // Get the first fingerprint token
-        Token token = fpTokens.get(0);
-        // Pick the first instance of this token in the Pattern to be the anchor
-        TokenInstance patternAnchorToken = token.patternInstance.get(0);
-        // Calculate all the delta's
-        for( TokenInstance tokenInstance : token.patternInstance){
-            System.out.println( patternAnchorToken.tokenDelta(tokenInstance) );
-        }
 
-        // Get an occurence of this token in from the grid
-        TokenInstance gridToken = token.patternInstance.get(0);
+        for( Token token : fpTokens){
+            // Pick the first instance of this token in the Pattern to be the anchor
+            TokenInstance patternAnchorToken = token.patternInstance.get(0);
+            // Pick the first instance of this token in the Grid to test against
+            TokenInstance gridTokenInstance = token.gridInstance.get(0);
+            // Calculate all the delta's
+            for( TokenInstance tokenInstance : token.patternInstance){
+                int[] xy = patternAnchorToken.tokenDelta(tokenInstance);
+                System.out.println(String.format("token.id:%s" 
+                + " pattern position:%s,%s %s,%s"
+                + " grid position: %s, %s",
+                    token.id, tokenInstance.x, tokenInstance.y,  xy[0],  xy[1],
+                    gridTokenInstance.x, gridTokenInstance.y) );
+                    // Find the spot in the grid to be checked for this patter.
+                    int x = gridTokenInstance.x + xy[0];
+                    int y = gridTokenInstance.y + xy[1];
+                    boolean wasPatternFound = checkGridForPattern(token.id, x, y);
+                System.out.println("wasPatternFound: " + wasPatternFound);                    
+            }
+        }          
 
+        
         return "Yes";
+    }
+    /**
+     * Checks the Grid for a Pattern at the given coords
+     * @param pattern
+     * @param x
+     * @param y
+     * @return boolean true if Pattern found at coords.
+     */
+    public boolean checkGridForPattern(String pattern, int x, int y){
+        System.out.println("Grid check: " +pattern +" == "
+        + this.G[y].substring(x, x+pattern.length()));
+        return pattern.equals(this.G[y].substring(x, x+pattern.length() )) ;           
     }
 
     /**
@@ -76,10 +104,15 @@ public class Solution {
      * then the pattern can not be found in the grid.
      */
     private boolean validatePatternInstanceCount(){
+        
         for( Token token : this.tokenTracker.tokens){
-            if( token.gridInstanceCount < token.patternInstanceCount){
-                return false;
-            }
+            try{
+                if( token.gridInstanceCount < token.patternInstanceCount){
+                    return false;
+                }
+            } catch(NullPointerException e){
+
+            }          
         }
         return true;
     }
