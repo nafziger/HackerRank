@@ -1,0 +1,63 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - GenerateTestData",
+            "request": "launch",
+            "mainClass": "algorithms.implementation.thegridsearch.GenerateTestData",
+            "projectName": "test"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - FunctionPass",
+            "request": "launch",
+            "mainClass": "algorithms.implementation.thegridsearch.FunctionPass",
+            "projectName": "test"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - BitTest",
+            "request": "launch",
+            "mainClass": "algorithms.implementation.thegridsearch.BitTest",
+            "projectName": "test"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - PrintTest",
+            "request": "launch",
+            "mainClass": "algorithms.implementation.thegridsearch.PrintTest",
+            "projectName": "test"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Printtest",
+            "request": "launch",
+            "mainClass": "algorithms.implementation.thegridsearch.Printtest",
+            "projectName": "test"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Solution",
+            "request": "launch",
+            "mainClass": "algorithms.implementation.thegridsearch.Solution",
+            "projectName": "test"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-HelloWorld<test>",
+            "request": "launch",
+            "mainClass": "com.example.test.HelloWorld",
+            "projectName": "test"
+        }
+    ]
+}
