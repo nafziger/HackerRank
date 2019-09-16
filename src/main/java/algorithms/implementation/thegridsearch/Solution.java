@@ -12,7 +12,7 @@ public class Solution {
     TokenTracker tokenTracker;
     String[] G, P;    
     int R, C, r, c;
-    static final int TOKENSIZE=6;    
+    static int TOKENSIZE=6;    
     public Solution(String[] G, String[] P, int R, int C, int r, int c){
         this.G = G;
         this.P = P;
@@ -24,7 +24,6 @@ public class Solution {
         this.c = c;
     }  
 
-   
     /**
      * Search for a rectangular pattern of digits in a grid.
      * 
@@ -33,8 +32,9 @@ public class Solution {
      * @return "Yes" if P is in G. "No" otherwise.
      */
     public String gridSearch(String[] G, String[] P) {   
+        TOKENSIZE = Math.min(P[0].length(), TOKENSIZE);
         int tokenSetSize = (int) Math.pow(10, Solution.TOKENSIZE);
-        System.out.println("Size: " + tokenSetSize );
+        // System.out.println("Size: " + tokenSetSize );
         tokenTracker = new TokenTracker(tokenSetSize);
         tokenizeArrays();    
         //printArrays();
@@ -42,7 +42,7 @@ public class Solution {
 
         // Check that the Grid has at least as many instances of each token as the Pattern 
         if (!validatePatternInstanceCount()){
-            return "No";
+            return "NO";
         }
 
         // Get the list of tokens from the pattern ordered by Grid/Pattern uniqueness 
@@ -50,40 +50,57 @@ public class Solution {
 
 
         // Print token details
-        int fpTokenInstanceCount = 0;        
-        for( Token token : fpTokens){
-            System.out.println( String.format("Token: %s  GridCount: %s PatternCount: %s FingerprintValue: %s", 
-                token.id, token.gridInstanceCount, token.patternInstanceCount,
-                token.gridInstanceCount * token.patternInstanceCount) );
-            fpTokenInstanceCount += token.patternInstanceCount;
-        }
-        System.out.println(String.format("There are %s fingerprint tokens with a total of "
-        +"%s instances", fpTokens.size(), fpTokenInstanceCount));
+        // int fpTokenInstanceCount = 0;        
+        // for( Token token : fpTokens){
+        //     System.out.println( String.format("Token: %s  GridCount: %s PatternCount: %s FingerprintValue: %s", 
+        //         token.id, token.gridInstanceCount, token.patternInstanceCount,
+        //         token.gridInstanceCount * token.patternInstanceCount) );
+        //     fpTokenInstanceCount += token.patternInstanceCount;
+        // }
+        // System.out.println(String.format("There are %s fingerprint tokens with a total of "
+        // +"%s instances", fpTokens.size(), fpTokenInstanceCount));
 
 
-        for( Token token : fpTokens){
-            // Pick the first instance of this token in the Pattern to be the anchor
-            TokenInstance patternAnchorToken = token.patternInstance.get(0);
-            // Pick the first instance of this token in the Grid to test against
-            TokenInstance gridTokenInstance = token.gridInstance.get(0);
-            // Calculate all the delta's
-            for( TokenInstance tokenInstance : token.patternInstance){
-                int[] xy = patternAnchorToken.tokenDelta(tokenInstance);
-                System.out.println(String.format("token.id:%s" 
-                + " pattern position:%s,%s %s,%s"
-                + " grid position: %s, %s",
-                    token.id, tokenInstance.x, tokenInstance.y,  xy[0],  xy[1],
-                    gridTokenInstance.x, gridTokenInstance.y) );
-                    // Find the spot in the grid to be checked for this patter.
-                    int x = gridTokenInstance.x + xy[0];
-                    int y = gridTokenInstance.y + xy[1];
-                    boolean wasPatternFound = checkGridForPattern(token.id, x, y);
-                System.out.println("wasPatternFound: " + wasPatternFound);                    
-            }
-        }          
-
+        /**
+         * Select the first fingerprint token to be the anchor token. Find the first instance of the anchor token 
+         * in the grid and from that point search for all other instances of that token in the grid. Then proceed 
+         * to search for all instance of all other tokens from that same grid anchor point. If a token is missing 
+         * then jump back and select the next instance of the anchor token in the grid. Proceed until either all tokens 
+         * are found for a particular grid anchor point, or all grid instances of the anchor token are exhausted.
+         */
         
-        return "Yes";
+        Token anchorToken = fpTokens.get(0);
+        TokenInstance patternAnchorInstance = anchorToken.patternInstance.get(0);        
+        boolean mismatchFound=true;
+        // For each instance of the grid anchor
+        for(TokenInstance gridAnchorInstance : anchorToken.gridInstance){
+            mismatchFound=false;
+            // For each fingerprint token
+            for( Token token : fpTokens){                
+                // For each instance of each fingerprint token
+                for( TokenInstance patternInstance : token.patternInstance){
+                    // Calculate the pattern anchor delta
+                    int[] xy = patternAnchorInstance.tokenDelta(patternInstance);
+                    // Add that delta to our grid anchor
+                    int x = gridAnchorInstance.x + xy[0];
+                    int y = gridAnchorInstance.y + xy[1];
+                    // Check for the pattern at that grid position
+                    boolean wasPatternFound = checkGridForPattern(token.id, x, y);
+                    if (!wasPatternFound){
+                        mismatchFound=true;
+                        break;
+                    }
+                }
+                break;
+            }            
+        }
+        if (mismatchFound){
+            return "NO";
+        } else{
+            return "YES";
+        }   
+        
+
     }
     /**
      * Checks the Grid for a Pattern at the given coords
@@ -93,9 +110,13 @@ public class Solution {
      * @return boolean true if Pattern found at coords.
      */
     public boolean checkGridForPattern(String pattern, int x, int y){
-        System.out.println("Grid check: " +pattern +" == "
-        + this.G[y].substring(x, x+pattern.length()));
-        return pattern.equals(this.G[y].substring(x, x+pattern.length() )) ;           
+        // System.out.println("Grid check: " +pattern +" == "
+        // + this.G[y].substring(x, x+pattern.length()));        
+        try{
+            return pattern.equals(this.G[y].substring(x, x+pattern.length() )) ;   
+        } catch (IndexOutOfBoundsException e){
+            return false;
+        } 
     }
 
     /**
@@ -203,11 +224,12 @@ public class Solution {
 
 
     // Create the scanner to be used to read input 
-    private static final Scanner scanner;
-    static {   
-        scanner = new Scanner(System.in);
-    }
-    public static void main(String[] args) throws IOException {
+    // private static final Scanner scanner;
+    // static {   
+    //     scanner = new Scanner(System.in);
+    // }
+    public static void main(String[] args) throws IOException {   
+        Scanner scanner = new Scanner(System.in);     
         // For local run vs HackerRank compatibility 
         BufferedWriter bufferedWriter ;
         try{

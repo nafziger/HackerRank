@@ -50,7 +50,6 @@ public class SolutionTest {
         // convert the byte array into an input stream
         ByteArrayInputStream bin = new ByteArrayInputStream(data);
         System.setIn(bin);   
-
     }
 
     private String getOutput() {
@@ -65,11 +64,13 @@ public class SolutionTest {
     
     @ParameterizedTest
     @CsvSource({    
-        "testCase.txt,     output02.txt",
-        //"input02.txt,     output02.txt",  
-        //"inputHard00.txt,     output00.txt",       
-        // "input00.txt,     output00.txt",           
-        // "input01.txt,     output02.txt"    
+        // "50_50_10_10_input.txt, output02.txt",
+        // "testCase.txt,     output02.txt",        
+        // "inputHard00.txt,     output00.txt",     
+
+         "input01.txt,     output01.txt",    
+         //"input00.txt,     output00.txt",  
+          //"input02.txt,     output02.txt",  
     })   
     public void runPrimaryTestCases(String inputFile, String expectedOutputFile) throws IOException {   
        
@@ -89,7 +90,7 @@ public class SolutionTest {
         
         // Test that the two ByteArrayOutputStreams have the same string representation.
         assertEquals(expectedOutputByteStream.toString(), getOutput() );
- 
+        
     }
 
 }
