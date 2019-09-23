@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - Solution",
+            "request": "launch",
+            "mainClass": "algorithms.implementation.queensattackii.Solution",
+            "projectName": "test"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Solution",
+            "request": "launch",
+            "mainClass": "algorithms.queensattackii.Solution",
+            "projectName": "test"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - GenerateTestData",
             "request": "launch",
             "mainClass": "algorithms.implementation.thegridsearch.GenerateTestData",
