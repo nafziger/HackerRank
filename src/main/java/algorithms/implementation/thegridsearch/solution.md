@@ -172,3 +172,10 @@ Fewest combinations to check. Wait. We don't need to check each. Fix the pattern
 
 For this string, pick any single occurrence in the pattern as a fixed anchor point. For each of this string in the grid, check if the pattern matches the grid when the pattern is positioned according to the anchor and grid string.
 
+# First attempt
+
+Test Case 4		Timeout
+Test Case 5		Timeout
+Test Case 6		Wrong
+Test Case 10	Wrong
+Test Case 12	Wrong

@@ -49,7 +49,7 @@ public class Solution {
         ArrayList<Token> fpTokens = tokenTracker.getFingerprintOrderedTokens();
 
 
-        // Print token details
+        //Print token details
         // int fpTokenInstanceCount = 0;        
         // for( Token token : fpTokens){
         //     System.out.println( String.format("Token: %s  GridCount: %s PatternCount: %s FingerprintValue: %s", 
@@ -81,6 +81,7 @@ public class Solution {
                 for( TokenInstance patternInstance : token.patternInstance){
                     // Calculate the pattern anchor delta
                     int[] xy = patternAnchorInstance.tokenDelta(patternInstance);
+                    //System.out.println(xy[0] +" "+xy[1]);
                     // Add that delta to our grid anchor
                     int x = gridAnchorInstance.x + xy[0];
                     int y = gridAnchorInstance.y + xy[1];
@@ -90,8 +91,10 @@ public class Solution {
                         mismatchFound=true;
                         break;
                     }
-                }
-                break;
+                if(mismatchFound){
+                    break;
+                    }
+                }                
             }            
         }
         if (mismatchFound){
