@@ -9,18 +9,63 @@ import java.util.concurrent.*;
 import java.util.regex.*;
 
 public class Solution {
-
+    public int n, k, r_q, c_q;
+    public int [][] obstacles;
+    ObstacleHash obsHash;
     // Complete the queensAttack function below.
-    static int queensAttack(int n, int k, int r_q, int c_q, int[][] obstacles) {
-        
+    Solution(int n, int k, int r_q, int c_q, int[][] obstacles){
+        this.n =n;
+        this.k =k;
+        this.r_q=r_q;
+        this.c_q=c_q;
+        this.obstacles=obstacles;
+    }
+
+    public int queensAttack() {        
         // Build a quick lookup data structure for the obstacles
-        ObstacleHash obsHash = new ObstacleHash(obstacles);
+        obsHash = new ObstacleHash(this.obstacles);
         System.out.println(obsHash.contains(1,1));
         System.out.println(obsHash.contains(2,2));
         System.out.println(obsHash.contains(3,2));
+        
+        // 8 directions
+        // N NW W SW S SE E NE
         return 1;
     }
-    
+    public boolean checkDirectionRadius(int r, DirectionInterface di){
+        int[] directionCoords = di.direction(this.r_q, this.c_q, r);        
+        return validCoords(directionCoords) && !obsHash.contains(directionCoords);
+    }
+    public interface DirectionInterface{
+        public int[] direction(int x, int y, int r);
+    }
+    public boolean validCoords(int[] coords){
+        return coords[0]<=this.n && coords[0]>=1 && coords[1]<=this.n && coords[1]>=0;        
+    }
+    static int[] N(int x, int y, int r){
+        return new int[]{x, y + r};
+    }
+    static int[] NW(int x, int y, int r){
+        return new int[]{x - r, y + r};
+    }
+    static int[] W(int x, int y, int r){
+        return new int[]{x - r, y};
+    }
+    static int[] SW(int x, int y, int r){
+        return new int[]{x - r, y - r};
+    }
+    static int[] S(int x, int y, int r){
+        return new int[]{x, y - r};
+    }
+    static int[] SE(int x, int y, int r){
+        return new int[]{x + r, y - r};
+    }
+    static int[] E(int x, int y, int r){
+        return new int[]{x + r, y};
+    }
+    static int[] NE(int x, int y, int r){
+        return new int[]{x + r, y + r};
+    }
 
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -56,8 +101,8 @@ public class Solution {
                 obstacles[i][j] = obstaclesItem;
             }
         }
-
-        int result = queensAttack(n, k, r_q, c_q, obstacles);
+        Solution solution = new Solution(n, k, r_q, c_q, obstacles);
+        int result = solution.queensAttack();
 
         bufferedWriter.write(String.valueOf(result));
         bufferedWriter.newLine();
@@ -91,4 +136,8 @@ final class ObstacleHash{
             return false;
         }
     }
+    public boolean contains(int[] coords){
+        return contains(coords[0] ,coords[1]);
+    }
+        
 }
