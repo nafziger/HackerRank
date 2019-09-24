@@ -24,46 +24,59 @@ public class Solution {
     public int queensAttack() {        
         // Build a quick lookup data structure for the obstacles
         obsHash = new ObstacleHash(this.obstacles);
-        System.out.println(obsHash.contains(1,1));
-        System.out.println(obsHash.contains(2,2));
-        System.out.println(obsHash.contains(3,2));
-        
+        // System.out.println(obsHash.contains(1,1));
+        // System.out.println(obsHash.contains(2,2));
+        // System.out.println(obsHash.contains(3,2));
+        //DirectionInterface[] directions = DirectionInterface[]{Solution::N, Solution::NW, Solution::W, Solution::SW, Solution::S, Solution::SE, Solution::E, Solution::NE};
+        List<DirectionInterface> directions = Arrays.asList(Solution::N, Solution::NW, Solution::W, Solution::SW, Solution::S, Solution::SE, Solution::E, Solution::NE);
+        // System.out.println("CD: "+ checkDirectionRadius(1, Solution::N) );
+        // System.out.println("CD: "+ checkDirectionRadius(1, Solution::SW) );
+        int count = 0;
+        for (DirectionInterface direction : directions) {
+            int r = 1;
+            while(checkDirectionRadius(r, direction)) {
+                count++;
+                r++;
+            }
+        }
+        //System.out.println("Final count:" + count);
         // 8 directions
         // N NW W SW S SE E NE
-        return 1;
+        return count;
     }
     public boolean checkDirectionRadius(int r, DirectionInterface di){
-        int[] directionCoords = di.direction(this.r_q, this.c_q, r);        
+        int[] directionCoords = di.direction(this.r_q, this.c_q, r);  
+        //System.out.println(directionCoords[0] +" "+ directionCoords[1] + " "+ obsHash.contains(directionCoords));  
         return validCoords(directionCoords) && !obsHash.contains(directionCoords);
     }
     public interface DirectionInterface{
         public int[] direction(int x, int y, int r);
     }
     public boolean validCoords(int[] coords){
-        return coords[0]<=this.n && coords[0]>=1 && coords[1]<=this.n && coords[1]>=0;        
+        return coords[0]<=this.n && coords[0]>=1 && coords[1]<=this.n && coords[1]>=1;        
     }
-    static int[] N(int x, int y, int r){
+    static int[] S(int x, int y, int r){
         return new int[]{x, y + r};
     }
-    static int[] NW(int x, int y, int r){
+    static int[] SW(int x, int y, int r){
         return new int[]{x - r, y + r};
     }
     static int[] W(int x, int y, int r){
         return new int[]{x - r, y};
     }
-    static int[] SW(int x, int y, int r){
+    static int[] NW(int x, int y, int r){
         return new int[]{x - r, y - r};
     }
-    static int[] S(int x, int y, int r){
+    static int[] N(int x, int y, int r){
         return new int[]{x, y - r};
     }
-    static int[] SE(int x, int y, int r){
+    static int[] NE(int x, int y, int r){
         return new int[]{x + r, y - r};
     }
     static int[] E(int x, int y, int r){
         return new int[]{x + r, y};
     }
-    static int[] NE(int x, int y, int r){
+    static int[] SE(int x, int y, int r){
         return new int[]{x + r, y + r};
     }
 
